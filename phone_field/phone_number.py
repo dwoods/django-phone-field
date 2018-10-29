@@ -9,8 +9,8 @@ PHONE_TEST_REGEX = re.compile(r'^\+?1?-?\s*'         # optional leading '+1-' an
                               r'[-\.\s]*'            # strip -, ., and whitespace
                               r'(\d{4})$')           # last four digits
 
-BACKEND_EXTENSION_SEPARATOR = getattr(settings, 'PHONE_NUMBER_BACKEND_EXTENSION_SEPARATOR', default='x')
-VALID_EXTENSION_SEPARATOR = getattr(settings, 'PHONE_NUMBER_VALID_EXTENSION_SEPARATOR', default=' press ')
+BACKEND_EXTENSION_SEPARATOR = getattr(settings, 'PHONE_NUMBER_BACKEND_EXTENSION_SEPARATOR', 'x')
+VALID_EXTENSION_SEPARATOR = getattr(settings, 'PHONE_NUMBER_VALID_EXTENSION_SEPARATOR', ' press ')
 
 
 class PhoneNumber:

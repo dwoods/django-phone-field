@@ -93,7 +93,7 @@ class PhoneNumber:
     def base_number_fmt(self):
         # The base part of the cleaned number, but formatted: e.g. "(415) 222-3333"
         if self.is_usa:
-            return '({}) {}-{}'.format(self._base_number[2:5], self._base_number[5:8], self._base_number[8:12])
+            return '{}-{}-{}'.format(self._base_number[2:5], self._base_number[5:8], self._base_number[8:12])
         return self._base_number
 
     @property

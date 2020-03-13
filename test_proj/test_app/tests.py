@@ -6,7 +6,7 @@ from django.template import Context, Template
 from django.test import TestCase
 from phone_field import PhoneNumber
 from phone_field.forms import PhoneFormField
-from .models import TestModel, TestModelOptional
+from .models import TestModel, TestModelOptional, TestModelBlankNull
 
 
 PARSING_TESTS = [
@@ -63,7 +63,8 @@ PARSING_TESTS = [
 
 def _rendered_field_html(phone_number, extension, required):
     expected = '<tr><th><label for="id_phone_0">Phone:</label></th><td><input type="text" name="phone_0" ' \
-               f'value="{phone_number}" size="13" required id="id_phone_0" />\n\n&nbsp;&nbsp;ext.&nbsp;&nbsp;' \
+               f'value="{phone_number}" size="13" required id="id_phone_0" /><span class="phone-field-ext">' \
+               f'&nbsp;&nbsp;ext.&nbsp;&nbsp;</span>' \
                f'<input type="text" name="phone_1" value="{extension}" size="4" id="id_phone_1" /></td></tr>'
 
     if not required:
@@ -168,6 +169,12 @@ class ModelFormTest(TestCase):
         f = Form(instance=obj)
         self.assertEqual(str(f), _rendered_field_html(phone_number='(415) 123-4567', extension='88', required=True))
 
+    def test_modelform_rendering_nullable(self):
+        Form = modelform_factory(TestModelBlankNull, fields=('phone',))
+        obj = TestModel(phone='415 123 4567 x 88')
+        f = Form(instance=obj)
+        self.assertEqual(str(f), _rendered_field_html(phone_number='(415) 123-4567', extension='88', required=False))
+
     def test_modelform_saving(self):
         Form = modelform_factory(TestModel, fields=('phone',))
         f = Form({'phone_0': '415.123.4567', 'phone_1': '88'})
@@ -201,7 +208,7 @@ class AdminFormTest(TestCase):
     def test_admin_rendering(self):
         ma = admin.ModelAdmin(TestModel, self.site)
         obj = TestModel(phone='415 123 4567 x 88')
-        Form = ma.get_form(self.request)
+        Form = ma.get_form(self.request, fields=['phone'])
         f = Form(instance=obj)
         self.assertEqual(str(f), _rendered_field_html(phone_number='(415) 123-4567', extension='88', required=True))
 
